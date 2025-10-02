@@ -1,0 +1,14 @@
+[Unit]
+Description=AIS to OpenWebRX Map Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Environment="PATH=/home/pi/venv/bin"
+WorkingDirectory=/home/pi/
+ExecStart=/home/pi/venv/bin/python /home/pi/ais_to_openwebrx_map.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
