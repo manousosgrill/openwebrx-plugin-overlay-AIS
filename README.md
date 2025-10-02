@@ -63,3 +63,5 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 4. Moving ships will be colorfull and stationary will be blacked out.
 
 5. I have encorporated a buoy icon for known stationary buoy's.
+
+   Many 73's !!!
