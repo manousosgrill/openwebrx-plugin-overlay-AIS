@@ -70,7 +70,9 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 <img width="1267" height="296" alt="image" src="https://github.com/user-attachments/assets/9c3c2c26-3252-4f75-9104-93f719bff72f" />
 
 6b. load the ais_to_openwebrx_map.py python program on your pi and make it a service with ais2openwebrx.service files.
+ 
   sudo mv ais2openwebrx.service /etc/systemd/system/
+  
   sudo systemctl enable ais2openwebrx.service
 
   Run service (will be automatically started on next reboot):
