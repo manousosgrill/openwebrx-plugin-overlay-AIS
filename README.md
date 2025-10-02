@@ -40,18 +40,18 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 
 2. Files go in map folder of openwebrx in my ubuntu system it is on
 
-/usr/lib/python3/dist-packages/htdocs/plugins/map/ais_overlay/
+   /usr/lib/python3/dist-packages/htdocs/plugins/map/ais_overlay/
 
-in ais_overlay folder we put the files.
+   in ais_overlay folder we put the files.
 
 
-consult https://github.com/0xAF/openwebrxplus-plugins for more info.
+   consult https://github.com/0xAF/openwebrxplus-plugins for more info.
 
 3. In order for the ships to be able to show an angle you must edit the file:
-/usr/lib/python3/dist-packages/htdocs# cd /usr/lib/python3/dist-packages/htdocs/map-leaflet.js
+   /usr/lib/python3/dist-packages/htdocs# cd /usr/lib/python3/dist-packages/htdocs/map-leaflet.js
 
 
-find the lines that are like this:
+   find the lines that are like this:
 
         await $.getScript('https://cdn.jsdelivr.net/npm/leaflet.geodesic');
         await $.getScript('https://cdn.jsdelivr.net/npm/leaflet-textpath@1.2.3/leaflet.textpath.min.js');
