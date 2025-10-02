@@ -79,7 +79,12 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 
   sudo systemctl start ais2openwebrx.service
 
-   The raspberry pi will now be your server to provide tha json data.
+   The raspberry pi will now be your server to provide tha json data. 
+   
+   example: http://192.168.10.201:8081/ais/data.json
+
+
    
    if any problems contact me at sv9tnf@gmail.com
+
    Many 73's !!!
