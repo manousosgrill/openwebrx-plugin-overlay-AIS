@@ -59,3 +59,7 @@ find the lines that are like this:
         and add under
         await $.getScript('https://cdn.jsdelivr.net/gh/bbecquet/Leaflet.RotatedMarker/leaflet.rotatedMarker.js');
 
+
+4. Moving ships will be colorfull and stationary will be blacked out.
+
+5. I have encorporated a buoy icon for known stationary buoy's.
