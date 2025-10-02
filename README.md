@@ -4,7 +4,7 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 
 
 
-Data must be in this format : 
+1. Data must be in this format : 
 [
   {
     "mmsi": 219825000,
@@ -38,14 +38,16 @@ Data must be in this format :
 
 
 
-Files go in map folder of openwebrx in my ubuntu system it is on
+2. Files go in map folder of openwebrx in my ubuntu system it is on
 
 /usr/lib/python3/dist-packages/htdocs/plugins/map/ais_overlay/
+
 in ais_overlay folder we put the files.
+
 
 consult https://github.com/0xAF/openwebrxplus-plugins for more info.
 
-in order for the ships to be able to show an angle you must edit the file:
+3. In order for the ships to be able to show an angle you must edit the file:
 /usr/lib/python3/dist-packages/htdocs# cd /usr/lib/python3/dist-packages/htdocs/map-leaflet.js
 
 
