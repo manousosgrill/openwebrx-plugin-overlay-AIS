@@ -78,6 +78,8 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
   Run service (will be automatically started on next reboot):
 
   sudo systemctl start ais2openwebrx.service
+
+   The raspberry pi will now be your server to provide tha json data.
    
    if any problems contact me at sv9tnf@gmail.com
    Many 73's !!!
