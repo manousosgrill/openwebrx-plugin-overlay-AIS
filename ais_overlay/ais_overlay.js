@@ -11,22 +11,66 @@ Plugins.ais_overlay.init = async function () {
         var vesselCache = {};  // MMSI -> array of {lat, lon, timestamp}
         var closeTimers = {}; // store timers per vessel
 
-        function getBoatIcon(isMoving, mmsi) {
+        function getBoatIcon(isMoving, mmsi, shipType) {
             // Special buoys for specific MMSI
             if (mmsi === 992371913 || mmsi === 992371821) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/buoy.png',
-                    iconSize: [28, 28],
+                    iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
             }
+
+            // Make shipType safe for checks
+            const type = shipType ? shipType.toLowerCase() : "";
+
+            // Tug boat icon
+            if (type.includes("tug")) {
+                return L.icon({
+                    iconUrl: '/static/plugins/map/ais_overlay/tug.png',
+                    iconSize: [22, 22],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -14]
+                });
+            }
+
+            // Passenger ship icon
+            if (type.includes("passenger")) {
+                return L.icon({
+                    iconUrl: '/static/plugins/map/ais_overlay/passenger.png',
+                    iconSize: [22, 22],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -14]
+                });
+            }
+
+            // Cargo ship icon
+            if (type.includes("cargo")) {
+                return L.icon({
+                    iconUrl: '/static/plugins/map/ais_overlay/cargo.png',
+                    iconSize: [22, 22],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -14]
+                });
+            }
+
+            // Tanker ship icon
+            if (type.includes("tanker")) {
+                return L.icon({
+                    iconUrl: '/static/plugins/map/ais_overlay/tanker.png',
+                    iconSize: [22, 22],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -14]
+                });
+            }
+
             // Normal boat icons
             return L.icon({
                 iconUrl: isMoving
                     ? '/static/plugins/map/ais_overlay/boat.png'
                     : '/static/plugins/map/ais_overlay/boat_black.png',
-                iconSize: [28, 28],
+                iconSize: [22, 22],
                 iconAnchor: [14, 14],
                 popupAnchor: [0, -14]
             });
@@ -72,7 +116,7 @@ Plugins.ais_overlay.init = async function () {
             const cutoff = now - 1200;
             vesselCache[data.mmsi] = vesselCache[data.mmsi].filter(p => p.timestamp > cutoff);
 
-            // --- Marker popup (original full info) ---
+            // --- Marker popup ---
             var popup = `
                 <b>${data.name || "Unknown Vessel"}</b><br>
                 MMSI: <a href="https://www.vesselfinder.com/vessels/details/${data.mmsi}" target="_blank">
@@ -86,7 +130,7 @@ Plugins.ais_overlay.init = async function () {
             `;
 
             var marker = L.marker([data.lat, data.lon], {
-                icon: getBoatIcon(isMoving, data.mmsi),
+                icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text),
                 rotationAngle: data.cog || 0
             }).bindPopup(popup);
 
