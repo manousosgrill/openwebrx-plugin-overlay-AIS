@@ -5,14 +5,15 @@ Plugins.ais_overlay.init = async function () {
 
     setTimeout(function () {
 
-        var vesselLayer = L.layerGroup().addTo(map);
+        const vesselLayer = L.layerGroup().addTo(map);
 
-        // Cache for vessel trails
-        var vesselCache = {};  // MMSI -> array of {lat, lon, timestamp}
-        var closeTimers = {}; // store timers per vessel
+        // Caches
+        const vesselCache = {};  // MMSI -> array of {lat, lon, timestamp}
+        const closeTimers = {};  // MMSI -> timeout IDs
 
         function getBoatIcon(isMoving, mmsi, shipType) {
-            // Special buoys for specific MMSI
+            const type = shipType ? shipType.toLowerCase() : "";
+
             if (mmsi === 992371913 || mmsi === 992371821) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/buoy.png',
@@ -22,10 +23,6 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
-            // Make shipType safe for checks
-            const type = shipType ? shipType.toLowerCase() : "";
-
-            // Tug boat icon
             if (type.includes("tug")) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/tug.png',
@@ -35,7 +32,6 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
-            // Passenger ship icon
             if (type.includes("passenger")) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/passenger.png',
@@ -45,7 +41,6 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
-            // Cargo ship icon
             if (type.includes("cargo")) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/cargo.png',
@@ -55,7 +50,6 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
-            // Tanker ship icon
             if (type.includes("tanker")) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/tanker.png',
@@ -65,7 +59,6 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
-            // Normal boat icons
             return L.icon({
                 iconUrl: isMoving
                     ? '/static/plugins/map/ais_overlay/boat.png'
@@ -76,18 +69,17 @@ Plugins.ais_overlay.init = async function () {
             });
         }
 
-        // Draw trail from cached positions
         function drawTrail(trail) {
             if (!trail || trail.length < 2) return null;
 
             const now = Date.now() / 1000;
-            let segments = [];
+            const segments = [];
 
             for (let i = 1; i < trail.length; i++) {
                 const p1 = trail[i - 1];
                 const p2 = trail[i];
                 const age = now - p2.timestamp;
-                const alpha = Math.max(0.1, 1 - age / 1200); // fade over 20 min
+                const alpha = Math.max(0.1, 1 - age / 1200); // 20 minutes fade
 
                 const seg = L.polyline(
                     [[p1.lat, p1.lon], [p2.lat, p2.lon]],
@@ -95,16 +87,17 @@ Plugins.ais_overlay.init = async function () {
                 );
                 segments.push(seg);
             }
+
             return L.layerGroup(segments);
         }
 
         function updateVessel(data) {
             if (!data.lat || !data.lon) return;
 
-            var isMoving = data.sog && data.sog > 0;
+            const isMoving = data.sog && data.sog > 0;
+            const now = Date.now() / 1000;
 
             // --- Update cache ---
-            const now = Date.now() / 1000;
             if (!vesselCache[data.mmsi]) vesselCache[data.mmsi] = [];
             vesselCache[data.mmsi].push({
                 lat: data.lat,
@@ -112,12 +105,15 @@ Plugins.ais_overlay.init = async function () {
                 timestamp: now
             });
 
-            // Keep only last 20 minutes of positions
+            // Keep last 20 minutes
             const cutoff = now - 1200;
             vesselCache[data.mmsi] = vesselCache[data.mmsi].filter(p => p.timestamp > cutoff);
 
-            // --- Marker popup ---
-            var popup = `
+            // --- Create marker ---
+            const marker = L.marker([data.lat, data.lon], {
+                icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text),
+                rotationAngle: data.cog || 0
+            }).bindPopup(`
                 <b>${data.name || "Unknown Vessel"}</b><br>
                 MMSI: <a href="https://www.vesselfinder.com/vessels/details/${data.mmsi}" target="_blank">
                     ${data.mmsi}
@@ -127,14 +123,9 @@ Plugins.ais_overlay.init = async function () {
                 Destination: ${data.destination || "-"}<br>
                 Speed: ${data.sog != null ? data.sog + " kn" : "-"}<br>
                 Course: ${data.cog != null ? data.cog + "°" : "-"}
-            `;
+            `);
 
-            var marker = L.marker([data.lat, data.lon], {
-                icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text),
-                rotationAngle: data.cog || 0
-            }).bindPopup(popup);
-
-            // --- Auto-open popup on hover with 2s delayed close ---
+            // --- Hover popup behavior ---
             marker.on("mouseover", function () {
                 if (closeTimers[data.mmsi]) {
                     clearTimeout(closeTimers[data.mmsi]);
@@ -142,46 +133,87 @@ Plugins.ais_overlay.init = async function () {
                 }
                 this.openPopup();
             });
+
             marker.on("mouseout", function () {
                 closeTimers[data.mmsi] = setTimeout(() => {
                     this.closePopup();
-                }, 2000); // delay close by 2 seconds
+                }, 2000);
             });
 
             // --- Draw trail ---
-            var trailLayer = drawTrail(vesselCache[data.mmsi]);
+            const trailLayer = drawTrail(vesselCache[data.mmsi]);
             if (trailLayer) vesselLayer.addLayer(trailLayer);
 
+            // --- Add marker ---
             vesselLayer.addLayer(marker);
+        }
+
+        function updateShipCount(count) {
+            const label = document.getElementById("ais-ship-count");
+            const checkbox = document.getElementById("openwebrx-map-layer-ais-trails");
+            if (label && checkbox) {
+                label.textContent = checkbox.checked ? `(${count})` : '';
+            }
         }
 
         function fetchAIS() {
             fetch("http://sv9tnf.ham.gd:8081/ais/data.json")
                 .then(r => r.json())
                 .then(vessels => {
+                    const activeMMSIs = new Set();
+                    const now = Date.now() / 1000;
+
+                    vessels.forEach(vessel => {
+                        if (!vessel.mmsi) return;
+                        activeMMSIs.add(vessel.mmsi);
+                    });
+
+                    // Cleanup stale vessels
+                    for (const mmsi of Object.keys(vesselCache)) {
+                        if (!activeMMSIs.has(parseInt(mmsi))) {
+                            delete vesselCache[mmsi];
+                            if (closeTimers[mmsi]) {
+                                clearTimeout(closeTimers[mmsi]);
+                                delete closeTimers[mmsi];
+                            }
+                        }
+                    }
+
+                    // Redraw layer
                     vesselLayer.clearLayers();
                     vessels.forEach(updateVessel);
+
+                    // Update ship count label
+                    updateShipCount(activeMMSIs.size);
                 })
                 .catch(err => console.error("Error fetching AIS:", err));
         }
 
-        // Add to extra layers menu
+        // Add checkbox to UI with ship count span
         $('#openwebrx-map-extralayers').append(
             $('<label><input type="checkbox" ' +
                 'name="ais_overlay" ' +
                 'idx="5" ' +
-                'id="openwebrx-map-layer-ais-trails" checked>AIS Reciever Overlay</label>')
+                'id="openwebrx-map-layer-ais-trails" checked>' +
+                'AIS Receiver Overlay <span id="ais-ship-count">(0)</span></label>')
                 .on('change', function (e) {
-                    if (e.target.checked) map.addLayer(vesselLayer);
-                    else map.removeLayer(vesselLayer);
+                    if (e.target.checked) {
+                        map.addLayer(vesselLayer);
+                        // Restore ship count display
+                        updateShipCount(Object.keys(vesselCache).length);
+                    } else {
+                        map.removeLayer(vesselLayer);
+                        // Hide ship count
+                        updateShipCount(0);
+                    }
                 })
         );
 
+        // Start polling
         fetchAIS();
         setInterval(fetchAIS, 5000);
 
     }, 1000);
 
-    // return true, to indicate the plugin is loaded correctly
     return true;
-}
+};
