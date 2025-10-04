@@ -39,7 +39,7 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 
 
 
-2. Must edit adsb_overlay file for your adsb reciever.
+2. Must edit ais_overlay.js file for your adsb reciever.
 the http://xxx:8081/ais/data.json
 must show your recievers file.
 
