@@ -156,7 +156,7 @@ Plugins.ais_overlay.init = async function () {
         }
 
         function fetchAIS() {
-            fetch("http://192.168.10.201:8081/ais/data.json")
+            fetch("http://sv9tnf.ham.gd:8081/ais/data.json")
                 .then(r => r.json())
                 .then(vessels => {
                     vesselLayer.clearLayers();
