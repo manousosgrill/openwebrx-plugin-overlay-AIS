@@ -39,7 +39,13 @@ This is a pluing for openwebrx to overlay local AIS data from marine traffic loc
 
 
 
-2. Files go in map folder of openwebrx in my ubuntu system it is on
+2. Must edit adsb_overlay file for your adsb reciever.
+the http://xxx:8081/ais/data.json
+must show your recievers file.
+
+
+
+4. Files go in map folder of openwebrx in my ubuntu system it is on
 
    /usr/lib/python3/dist-packages/htdocs/plugins/map/ais_overlay/
 
