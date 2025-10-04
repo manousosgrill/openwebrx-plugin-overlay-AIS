@@ -157,7 +157,7 @@ Plugins.ais_overlay.init = async function () {
         }
 
         function fetchAIS() {
-            fetch("http://sv9tnf.ham.gd:8081/ais/data.json")
+            fetch("http://xxx:8081/ais/data.json")
                 .then(r => r.json())
                 .then(vessels => {
                     const activeMMSIs = new Set();
