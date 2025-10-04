@@ -195,7 +195,7 @@ Plugins.ais_overlay.init = async function () {
                 'name="ais_overlay" ' +
                 'idx="5" ' +
                 'id="openwebrx-map-layer-ais-trails" checked>' +
-                'AIS Receiver Overlay <span id="ais-ship-count">(0)</span></label>')
+                'AIS Receiver <span id="ais-ship-count">(0)</span></label>')
                 .on('change', function (e) {
                     if (e.target.checked) {
                         map.addLayer(vesselLayer);
