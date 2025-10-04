@@ -1,6 +1,7 @@
 This is a pluing for openwebrx to overlay local AIS data from marine traffic local reciever.
 
-<img width="846" height="587" alt="image" src="https://github.com/user-attachments/assets/6f10638d-9990-4e38-ba06-a28d2cce56d6" />
+<img width="1444" height="877" alt="image" src="https://github.com/user-attachments/assets/b8d6373a-3983-49ce-b316-cf4e3200776b" />
+
 
 
 
