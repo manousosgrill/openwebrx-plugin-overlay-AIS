@@ -109,12 +109,20 @@ Plugins.ais_overlay.init = async function () {
             const cutoff = now - 1200;
             vesselCache[data.mmsi] = vesselCache[data.mmsi].filter(p => p.timestamp > cutoff);
 
+            // --- Assign custom names for specific MMSIs ---
+            let displayName = data.name || "Unknown Vessel";
+            if (data.mmsi === 992371913) {
+                displayName = "FORACS BUOY 1";
+            } else if (data.mmsi === 992371821) {
+                displayName = "FORACS BUOY";
+            }
+
             // --- Create marker ---
             const marker = L.marker([data.lat, data.lon], {
                 icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text),
                 rotationAngle: data.cog || 0
             }).bindPopup(`
-                <b>${data.name || "Unknown Vessel"}</b><br>
+                <b>${displayName}</b><br>
                 MMSI: <a href="https://www.vesselfinder.com/vessels/details/${data.mmsi}" target="_blank">
                     ${data.mmsi}
                 </a><br>
@@ -157,7 +165,7 @@ Plugins.ais_overlay.init = async function () {
         }
 
         function fetchAIS() {
-            fetch("http://xxx:8081/ais/data.json")
+            fetch("http://sv9tnf.ham.gd:8081/ais/data.json")
                 .then(r => r.json())
                 .then(vessels => {
                     const activeMMSIs = new Set();
