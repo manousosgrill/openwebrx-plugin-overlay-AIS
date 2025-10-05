@@ -1,5 +1,8 @@
 This is a pluing for openwebrx to overlay local AIS data from marine traffic local reciever.
 
+ATTENTION!! this plugin only works with OpenStreet Map
+
+
 <img width="1444" height="877" alt="image" src="https://github.com/user-attachments/assets/b8d6373a-3983-49ce-b316-cf4e3200776b" />
 
 
