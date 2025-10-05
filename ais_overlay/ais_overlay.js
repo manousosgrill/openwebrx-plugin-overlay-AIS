@@ -11,9 +11,10 @@ Plugins.ais_overlay.init = async function () {
         const vesselCache = {};  // MMSI -> array of {lat, lon, timestamp}
         const closeTimers = {};  // MMSI -> timeout IDs
 
-        function getBoatIcon(isMoving, mmsi, shipType) {
+        function getBoatIcon(isMoving, mmsi, shipType, course) {
             const type = shipType ? shipType.toLowerCase() : "";
 
+            // Special buoys
             if (mmsi === 992371913 || mmsi === 992371821) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/buoy.png',
@@ -23,9 +24,20 @@ Plugins.ais_overlay.init = async function () {
                 });
             }
 
+            function pickIcon(baseName) {
+                if (course != null) {
+                    if (course >= 0 && course <= 180) {
+                        return `/static/plugins/map/ais_overlay/${baseName}2.png`;
+                    } else if (course > 180 && course < 360) {
+                        return `/static/plugins/map/ais_overlay/${baseName}.png`;
+                    }
+                }
+                return `/static/plugins/map/ais_overlay/${baseName}.png`; // fallback
+            }
+
             if (type.includes("tug")) {
                 return L.icon({
-                    iconUrl: '/static/plugins/map/ais_overlay/tug.png',
+                    iconUrl: pickIcon("tug"),
                     iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
@@ -34,7 +46,7 @@ Plugins.ais_overlay.init = async function () {
 
             if (type.includes("passenger")) {
                 return L.icon({
-                    iconUrl: '/static/plugins/map/ais_overlay/passenger.png',
+                    iconUrl: pickIcon("passenger"),
                     iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
@@ -43,7 +55,7 @@ Plugins.ais_overlay.init = async function () {
 
             if (type.includes("cargo")) {
                 return L.icon({
-                    iconUrl: '/static/plugins/map/ais_overlay/cargo.png',
+                    iconUrl: pickIcon("cargo"),
                     iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
@@ -52,17 +64,16 @@ Plugins.ais_overlay.init = async function () {
 
             if (type.includes("tanker")) {
                 return L.icon({
-                    iconUrl: '/static/plugins/map/ais_overlay/tanker.png',
+                    iconUrl: pickIcon("tanker"),
                     iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
             }
 
+            // Default boats
             return L.icon({
-                iconUrl: isMoving
-                    ? '/static/plugins/map/ais_overlay/boat.png'
-                    : '/static/plugins/map/ais_overlay/boat_black.png',
+                iconUrl: pickIcon(isMoving ? "boat" : "boat_black"),
                 iconSize: [22, 22],
                 iconAnchor: [14, 14],
                 popupAnchor: [0, -14]
@@ -119,7 +130,7 @@ Plugins.ais_overlay.init = async function () {
 
             // --- Create marker ---
             const marker = L.marker([data.lat, data.lon], {
-                icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text),
+                icon: getBoatIcon(isMoving, data.mmsi, data.ship_type_text, data.cog),
                 rotationAngle: data.cog || 0
             }).bindPopup(`
                 <b>${displayName}</b><br>
@@ -165,7 +176,7 @@ Plugins.ais_overlay.init = async function () {
         }
 
         function fetchAIS() {
-            fetch("http://xxx:8081/ais/data.json")
+            fetch("http://sv9tnf.ham.gd:8081/ais/data.json")
                 .then(r => r.json())
                 .then(vessels => {
                     const activeMMSIs = new Set();
