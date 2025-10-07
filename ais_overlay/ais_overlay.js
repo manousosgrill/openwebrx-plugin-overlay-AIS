@@ -18,7 +18,7 @@ Plugins.ais_overlay.init = async function () {
             if (mmsi === 992371913 || mmsi === 992371821) {
                 return L.icon({
                     iconUrl: '/static/plugins/map/ais_overlay/buoy.png',
-                    iconSize: [22, 22],
+                    iconSize: [26, 26],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -38,7 +38,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("tug")) {
                 return L.icon({
                     iconUrl: pickIcon("tug"),
-                    iconSize: [22, 22],
+                    iconSize: [25, 25],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -47,7 +47,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("passenger")) {
                 return L.icon({
                     iconUrl: pickIcon("passenger"),
-                    iconSize: [22, 22],
+                    iconSize: [26, 26],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -56,7 +56,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("cargo")) {
                 return L.icon({
                     iconUrl: pickIcon("cargo"),
-                    iconSize: [22, 22],
+                    iconSize: [26, 26],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -65,7 +65,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("tanker")) {
                 return L.icon({
                     iconUrl: pickIcon("tanker"),
-                    iconSize: [22, 22],
+                    iconSize: [26, 26],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -74,7 +74,7 @@ Plugins.ais_overlay.init = async function () {
             // Default boats
             return L.icon({
                 iconUrl: pickIcon(isMoving ? "boat" : "boat_black"),
-                iconSize: [22, 22],
+                iconSize: [28, 28],
                 iconAnchor: [14, 14],
                 popupAnchor: [0, -14]
             });
