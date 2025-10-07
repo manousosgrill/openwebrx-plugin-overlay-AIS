@@ -38,7 +38,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("tug")) {
                 return L.icon({
                     iconUrl: pickIcon("tug"),
-                    iconSize: [25, 25],
+                    iconSize: [22, 22],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -47,7 +47,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("passenger")) {
                 return L.icon({
                     iconUrl: pickIcon("passenger"),
-                    iconSize: [26, 26],
+                    iconSize: [28, 28],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -56,7 +56,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("cargo")) {
                 return L.icon({
                     iconUrl: pickIcon("cargo"),
-                    iconSize: [26, 26],
+                    iconSize: [28, 28],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
@@ -65,7 +65,7 @@ Plugins.ais_overlay.init = async function () {
             if (type.includes("tanker")) {
                 return L.icon({
                     iconUrl: pickIcon("tanker"),
-                    iconSize: [26, 26],
+                    iconSize: [28, 28],
                     iconAnchor: [14, 14],
                     popupAnchor: [0, -14]
                 });
